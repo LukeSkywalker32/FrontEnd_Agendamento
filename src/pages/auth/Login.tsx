@@ -27,6 +27,7 @@ export function Login() {
          };
          navigate(roleRoutes[user.role]);
       } catch (error) {
+         // biome-ignore lint/suspicious/noConsole: false positive
          console.error(error);
          alert("Erro ao fazer login");
       } finally {
