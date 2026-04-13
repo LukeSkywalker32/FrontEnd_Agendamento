@@ -84,7 +84,7 @@ export const darkTheme: typeof lightTheme = {
       ...lightTheme.colors,
       primary: "#3B83F6",
       primaryHover: "#2563EB",
-      primaryLight: "1E3A5F",
+      primaryLight: "#1E3A5F",
 
       secondary: "#38BDF8",
 

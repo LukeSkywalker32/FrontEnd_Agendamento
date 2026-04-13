@@ -12,7 +12,7 @@ interface AuthContextData {
    user: User | null;
    token: string | null;
    isAuthenticated: boolean;
-   login: (email: string, password: string) => Promise<void>;
+   login: (email: string, password: string) => Promise<User>;
    logout: () => void;
 }
 interface AuthProviderProps {
@@ -40,12 +40,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
    }, []);
 
    //login
-   async function login(email: string, password: string) {
+   async function login(email: string, password: string): Promise<User> {
       const response = await api.post("auth/login", {
          email,
          password,
       });
-      const { user, token } = response.data;
+      const { user, tokens } = response.data;
+      const token = tokens.access;
       setUser(user);
       setToken(token);
 
@@ -53,6 +54,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       localStorage.setItem("@SATA:token", token);
 
       api.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+      return user;
    }
 
    //logout

@@ -19,7 +19,7 @@ margin: 10px 0;
 
 a {
 text-decoration: none;
-color: ${({ theme }) => theme.colors.text};
+color: ${({ theme }) => theme.colors.text.primary};
 
 &.active {
 font-weigth: bold;

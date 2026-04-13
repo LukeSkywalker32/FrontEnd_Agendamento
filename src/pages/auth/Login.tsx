@@ -16,10 +16,16 @@ export function Login() {
       try {
          setLoading(true);
 
-         await login(email, password);
+         const user = await login(email, password);
 
-         // 🔥 Redireciona baseado no sistema
-         navigate("/admin/dashboard");
+         // 🔥 Redireciona baseado no role
+         const roleRoutes = {
+            admin: "/admin/dashboard",
+            company: "/company/dashboard",
+            carrier: "/carrier/dashboard",
+            driver: "/driver/dashboard",
+         };
+         navigate(roleRoutes[user.role]);
       } catch (error) {
          console.error(error);
          alert("Erro ao fazer login");
