@@ -78,21 +78,6 @@ const Label = styled.label`
    margin-bottom: 4px;
 `;
 
-// Banner de feedback após tentativa
-const Banner = styled.div<{ $type: "success" | "error" }>`
-   border-radius: ${({ theme }) => theme.borderRadius.md};
-   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
-   font-size: ${({ theme }) => theme.typography.sizes.sm};
-   margin-bottom: ${({ theme }) => theme.spacing.md};
-
-   background: ${({ $type, theme }) =>
-      $type === "success" ? theme.colors.status.successBg : theme.colors.status.errorBg};
-   color: ${({ $type, theme }) =>
-      $type === "success" ? theme.colors.status.success : theme.colors.status.error};
-   border: 1px solid ${({ $type, theme }) =>
-      $type === "success" ? theme.colors.status.success : theme.colors.status.error};
-`;
-
 // Linha divisória
 const Divider = styled.hr`
    border: none;
