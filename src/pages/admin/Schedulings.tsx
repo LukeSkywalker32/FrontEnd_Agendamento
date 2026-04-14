@@ -4,17 +4,17 @@ import { useApi } from "../../hooks/useApi";
 
 // Tipagem baseada no que /api/admin/schedulings retorna (com populate)
 interface Scheduling {
-   _id:            string;
-   driverName:     string;
-   driverCpf:      string;
-   vehiclePlate:   string;
-   vehicleType:    string;
-   status:         string;
+   _id: string;
+   driverName: string;
+   driverCpf: string;
+   vehiclePlate: string;
+   vehicleType: string;
+   status: string;
    documentStatus: string;
-   createdAt:      string;
-   carrierId:      { name: string; document: string } | null;
-   companyId:      { name: string; document: string } | null;
-   timeWindowId:   { date: string; startTime: string; endTime: string } | null;
+   createdAt: string;
+   carrierId: { name: string; document: string } | null;
+   companyId: { name: string; document: string } | null;
+   timeWindowId: { date: string; startTime: string; endTime: string } | null;
 }
 
 const Page = styled.main`
@@ -53,8 +53,7 @@ const FilterBtn = styled.button<{ $active: boolean }>`
    cursor: pointer;
    border: 1px solid ${({ $active, theme }) =>
       $active ? theme.colors.primary : theme.colors.border};
-   background: ${({ $active, theme }) =>
-      $active ? theme.colors.primary : "transparent"};
+   background: ${({ $active, theme }) => ($active ? theme.colors.primary : "transparent")};
    color: ${({ $active, theme }) =>
       $active ? theme.colors.text.inverse : theme.colors.text.secondary};
    transition: all 0.15s ease;
@@ -95,20 +94,20 @@ const Td = styled.td`
 
 // Mapeamento de status → cores do tema
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
-   pending:    { bg: "#FEF3C7", color: "#92400E" },
-   confirmed:  { bg: "#DCFCE7", color: "#14532D" },
+   pending: { bg: "#FEF3C7", color: "#92400E" },
+   confirmed: { bg: "#DCFCE7", color: "#14532D" },
    checked_in: { bg: "#DBEAFE", color: "#1E3A5F" },
-   completed:  { bg: "#F1F5F9", color: "#475569" },
-   cancelled:  { bg: "#FEE2E2", color: "#7F1D1D" },
+   completed: { bg: "#F1F5F9", color: "#475569" },
+   cancelled: { bg: "#FEE2E2", color: "#7F1D1D" },
 };
 
 // Labels em PT-BR para os status da API
 const STATUS_LABELS: Record<string, string> = {
-   pending:    "Pendente",
-   confirmed:  "Confirmado",
+   pending: "Pendente",
+   confirmed: "Confirmado",
    checked_in: "Check-in",
-   completed:  "Concluído",
-   cancelled:  "Cancelado",
+   completed: "Concluído",
+   cancelled: "Cancelado",
 };
 
 const StatusBadge = styled.span<{ $status: string }>`
@@ -137,15 +136,14 @@ export function AdminSchedulings() {
 
    useEffect(() => {
       fetchSchedulings();
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [filter]); // Re-busca quando o filtro muda
 
    async function fetchSchedulings() {
       try {
          // Se o filtro for "todos", não passa query param (retorna todos)
-         const url = filter === "todos"
-            ? "/admin/schedulings"
-            : `/admin/schedulings?status=${filter}`;
+         const url =
+            filter === "todos" ? "/admin/schedulings" : `/admin/schedulings?status=${filter}`;
 
          const result = await get<{ status: string; data: Scheduling[] }>(url);
          setSchedulings(result.data);
@@ -168,11 +166,7 @@ export function AdminSchedulings() {
          {/* Botões de filtro rápido */}
          <Filters style={{ marginBottom: "1rem" }}>
             {ALL_FILTERS.map(f => (
-               <FilterBtn
-                  key={f}
-                  $active={filter === f}
-                  onClick={() => setFilter(f)}
-               >
+               <FilterBtn key={f} $active={filter === f} onClick={() => setFilter(f)}>
                   {STATUS_LABELS[f] ?? "Todos"}
                </FilterBtn>
             ))}
@@ -208,7 +202,9 @@ export function AdminSchedulings() {
                            </Td>
                            <Td>{s.carrierId?.name ?? "—"}</Td>
                            <Td>{s.companyId?.name ?? "—"}</Td>
-                           <Td><code>{s.vehiclePlate}</code></Td>
+                           <Td>
+                              <code>{s.vehiclePlate}</code>
+                           </Td>
                            <Td>
                               {s.timeWindowId
                                  ? `${formatDate(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`

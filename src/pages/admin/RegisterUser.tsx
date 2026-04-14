@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useApi } from "../../hooks/useApi";
 import { Button, Input } from "../../components/ui";
+import { useApi } from "../../hooks/useApi";
 
 const Page = styled.main`
    flex: 1;
@@ -107,25 +107,51 @@ const Actions = styled.div`
 `;
 
 interface FormData {
-   name:     string;
-   email:    string;
+   name: string;
+   email: string;
    password: string;
-   role:     "admin" | "company" | "carrier";
+   role: "admin" | "company" | "carrier";
    document: string;
-   phone:    string;
+   phone: string;
+}
+
+// Regex que define o que um e-mail PODE ter:
+// - Antes do @: letras a-z, números, pontos, hífens, underscores
+// - Sem acentos (á, é, ç, ã, ú...), sem espaços, sem caracteres especiais
+// - Domínio: letras, números, pontos, hífens
+// - TLD obrigatório: .com, .br, etc.
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+function validateEmail(email: string): string | null {
+   if (!email) return null; // campo vazio: sem mensagem ainda
+
+   // Detecta especificamente se tem caracteres acentuados ou especiais
+   // para dar uma mensagem mais clara do que "e-mail inválido"
+   const hasAccents = /[àáâãäåæçèéêëìíîïðñòóôõöùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞŸ]/.test(email);
+   if (hasAccents) {
+      return "E-mail não pode conter caracteres acentuados (á, ç, ã, etc.)";
+   }
+
+   // Valida o formato geral do e-mail
+   if (!EMAIL_REGEX.test(email)) {
+      return "E-mail inválido. Use apenas letras sem acento, números e @dominio.com";
+   }
+
+   return null; // null = sem erro
 }
 
 export function RegisterUser() {
    const { post, isLoading } = useApi();
    const navigate = useNavigate();
+   const [emailError, setEmailError] = useState<string | null>(null);
 
    const [form, setForm] = useState<FormData>({
-      name:     "",
-      email:    "",
+      name: "",
+      email: "",
       password: "",
-      role:     "company",   // padrão: empresa de insumos
+      role: "company", // padrão: empresa de insumos
       document: "",
-      phone:    "",
+      phone: "",
    });
 
    // Banner de feedback: null enquanto não houve tentativa
@@ -139,26 +165,38 @@ export function RegisterUser() {
    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
       const { name, value } = e.target;
       setForm(prev => ({ ...prev, [name]: value }));
+
+      // Valida o e-mail em tempo real e mostra mensagem de erro
+      if (name === "email") {
+         setEmailError(validateEmail(value));
+         //              ↑ atualiza a mensagem de erro a cada keystroke
+      }
    }
 
    async function handleSubmit(e: React.FormEvent) {
       e.preventDefault();
       setFeedback(null);
 
+      const emailValidationError = validateEmail(form.email);
+      if (emailValidationError) {
+         setEmailError(emailValidationError);
+         return;
+      }
+
       try {
          // POST /api/auth/register — exige token de admin no header
          // O header já está configurado via api.defaults pelo login
          await post("/auth/register", form);
-
          setFeedback({ type: "success", message: "Usuário cadastrado com sucesso!" });
-
          // Limpa o form após sucesso
          setForm({ name: "", email: "", password: "", role: "company", document: "", phone: "" });
+         //Limpa erro de email
+         setEmailError(null);
       } catch (err: unknown) {
          // Tenta extrair a mensagem de erro da API
          const message =
-            (err as { response?: { data?: { message?: string } } })
-               ?.response?.data?.message ?? "Erro ao cadastrar usuário.";
+            (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+            "Erro ao cadastrar usuário.";
          setFeedback({ type: "error", message });
       }
    }
@@ -171,9 +209,7 @@ export function RegisterUser() {
          </PageHeader>
 
          <FormCard>
-            {feedback && (
-               <Banner $type={feedback.type}>{feedback.message}</Banner>
-            )}
+            {feedback && <Banner $type={feedback.type}>{feedback.message}</Banner>}
 
             <form onSubmit={handleSubmit}>
                <Stack>
@@ -196,6 +232,7 @@ export function RegisterUser() {
                         placeholder="contato@empresa.com"
                         value={form.email}
                         onChange={handleChange}
+                        error={emailError ?? undefined} // mostra erro de email ou undefined para sem erro
                         required
                      />
                   </Row>
@@ -214,12 +251,7 @@ export function RegisterUser() {
                      />
                      <div>
                         <Label htmlFor="role">Perfil de acesso</Label>
-                        <Select
-                           id="role"
-                           name="role"
-                           value={form.role}
-                           onChange={handleChange}
-                        >
+                        <Select id="role" name="role" value={form.role} onChange={handleChange}>
                            {/* admin: acesso total */}
                            <option value="admin">Administrador</option>
                            {/* company: empresa que recebe os caminhões */}

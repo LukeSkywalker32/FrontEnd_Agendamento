@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useApi } from "../../hooks/useApi";
 import { Button } from "../../components/ui";
+import { useApi } from "../../hooks/useApi";
 
 // Tipagem de um usuário conforme o backend retorna
 interface User {
-   _id:       string;
-   name:      string;
-   email:     string;
-   role:      "admin" | "company" | "carrier";
-   document:  string;
-   phone:     string;
-   isActive:  boolean;
+   _id: string;
+   name: string;
+   email: string;
+   role: "admin" | "company" | "carrier";
+   document: string;
+   phone: string;
+   isActive: boolean;
    createdAt: string;
 }
 
@@ -87,14 +88,18 @@ const RoleBadge = styled.span<{ $role: string }>`
 
    // Cor diferente por role
    background: ${({ $role, theme }) =>
-      $role === "admin"   ? theme.colors.status.errorBg   :
-      $role === "company" ? theme.colors.status.infoBg    :
-                            theme.colors.status.successBg };
+      $role === "admin"
+         ? theme.colors.status.errorBg
+         : $role === "company"
+           ? theme.colors.status.infoBg
+           : theme.colors.status.successBg};
 
    color: ${({ $role, theme }) =>
-      $role === "admin"   ? theme.colors.status.error   :
-      $role === "company" ? theme.colors.status.info     :
-                            theme.colors.status.success  };
+      $role === "admin"
+         ? theme.colors.status.error
+         : $role === "company"
+           ? theme.colors.status.info
+           : theme.colors.status.success};
 `;
 
 // Indicador visual de status ativo/inativo
@@ -126,15 +131,17 @@ const EmptyState = styled.div`
 
 export function Users() {
    const { get, remove, isLoading } = useApi();
-   const [users, setUsers]   = useState<User[]>([]);
-   const [error, setError]   = useState<string | null>(null);
+   const [users, setUsers] = useState<User[]>([]);
+   const [error, setError] = useState<string | null>(null);
+   const navigate = useNavigate();
 
    // Carrega lista de usuários ao montar
    useEffect(() => {
       fetchUsers();
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
+   // Busca usuários via GET /api/admin/users
    async function fetchUsers() {
       try {
          const result = await get<{ status: string; data: User[] }>("/admin/users");
@@ -151,9 +158,7 @@ export function Users() {
       try {
          await remove(`/admin/users/${id}`);
          // Atualiza localmente: marca isActive = false sem refetch
-         setUsers(prev =>
-            prev.map(u => (u._id === id ? { ...u, isActive: false } : u))
-         );
+         setUsers(prev => prev.map(u => (u._id === id ? { ...u, isActive: false } : u)));
       } catch {
          alert("Erro ao desativar usuário.");
       }
@@ -170,7 +175,7 @@ export function Users() {
          <PageHeader>
             <Title>Usuários</Title>
             {/* Botão que leva para o cadastro de novo usuário */}
-            <Button variant="primary" onClick={() => window.location.href = "/admin/register"}>
+            <Button variant="primary" onClick={() => navigate("/admin/register")}>
                + Cadastrar usuário
             </Button>
          </PageHeader>
@@ -197,7 +202,9 @@ export function Users() {
                   <tbody>
                      {users.map(user => (
                         <tr key={user._id}>
-                           <Td><strong>{user.name}</strong></Td>
+                           <Td>
+                              <strong>{user.name}</strong>
+                           </Td>
                            <Td style={{ color: "inherit" }}>{user.email}</Td>
                            <Td>
                               <RoleBadge $role={user.role}>{user.role}</RoleBadge>

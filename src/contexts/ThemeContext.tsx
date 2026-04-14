@@ -10,7 +10,7 @@ interface ThemeContextData {
    toggleTheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextData>({} as ThemeContextData);
+const ThemeContext = createContext<ThemeContextData | undefined>(undefined);
 
 export function ThemeContextProvider({ children }: { children: React.ReactNode }) {
    const [mode, setMode] = useState<ThemeMode>(() => {
@@ -38,4 +38,10 @@ export function ThemeContextProvider({ children }: { children: React.ReactNode }
    );
 }
 
-export const useTheme = () => useContext(ThemeContext);
+export const useTheme = (): ThemeContextData => {
+   const context = useContext(ThemeContext);
+   if (context === undefined) {
+      throw new Error("useTheme deve ser utilizado dentro de um ThemeContextProvider");
+   }
+   return context;
+};

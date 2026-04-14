@@ -12,9 +12,9 @@ export const lightTheme = {
       border: "#E2E8F0",
 
       text: {
-         primary: "#0F172A",
-         secondary: "#475569",
-         muted: "#94A3B8",
+         primary: "#1F2937",
+         secondary: "#6B7280",
+         muted: "#9CA3AF",
          inverse: "#FFFFFF",
       },
 

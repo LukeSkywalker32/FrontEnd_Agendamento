@@ -2,20 +2,20 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { menuByRole } from "./MenuConfig";
 import {
-   SidebarContainer,
-   SidebarHeader,
-   SidebarNav,
-   SidebarFooter,
    Logo,
    LogoSub,
-   MenuSection,
    MenuItem,
+   MenuSection,
+   SidebarContainer,
+   SidebarFooter,
+   SidebarHeader,
+   SidebarNav,
 } from "./styles";
 
 export function Sidebar() {
    const { user } = useAuth();
 
-    //Busca o menu correto baseado no role do usuario
+   //Busca o menu correto baseado no role do usuario
    const menu = menuByRole[user.role];
    return (
       <SidebarContainer>
@@ -35,7 +35,7 @@ export function Sidebar() {
          </SidebarNav>
 
          <SidebarFooter>
-          Perfil: <strong style={{color: "#fff"}}>{user!.role}</strong>
+            Perfil: <strong style={{ color: "#fff" }}>{user!.role}</strong>
          </SidebarFooter>
       </SidebarContainer>
    );

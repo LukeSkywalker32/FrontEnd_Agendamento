@@ -4,14 +4,14 @@ export const LayoutWrapper = styled.div`
    display: flex;
    height: 100vh;
    overflow: hidden;
-   background: ${({ theme}) => theme.colors.background}
+   background: ${({ theme }) => theme.colors.background}
 `;
 
 // Sidebar: painel lateral fixo com largura definida
 export const SidebarContainer = styled.aside`
 width: 240px;
 height: 100vh;
-background: ${({ theme})=> theme.colors.sidebar}
+background: ${({ theme }) => theme.colors.sidebar}
 display: flex;
 flex-direction: column;
 flex-shrink: 0;
@@ -20,15 +20,15 @@ border-right: 1px solid rgba(255,255,255,0.06);
 
 // Topo da sidebar: área da logo com padding próprio
 export const SidebarHeader = styled.div`
-padding: ${({ theme}) => `${theme.spacing.xl} ${theme.spacing.lg}`};
+padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.lg}`};
 border-bottom: 1px solid rgba(255,255,255,0.07)
-margin-bottom: ${({ theme}) => theme.spacing.sm}
+margin-bottom: ${({ theme }) => theme.spacing.sm}
 `;
 
 //Logo: Texto Grande, cor branca, sem nested <h2>
 export const Logo = styled.div`
-font-size: ${({ theme}) => theme.typography.sizes["2xl"]};
-font-weight: ${({theme}) => theme.typography.weights.bold};
+font-size: ${({ theme }) => theme.typography.sizes["2xl"]};
+font-weight: ${({ theme }) => theme.typography.weights.bold};
 color: #FFFFFF;
 letter-spacing: -0.5px
 `;
@@ -36,9 +36,9 @@ letter-spacing: -0.5px
 // Subtítulo abaixo da logo
 export const LogoSub = styled.span`
 display: block;
-font-size: ${({ theme}) => theme.typography.sizes.xs};
-color: ${({theme})=> theme.colors.sidebarText};
-font-weight: ${({theme}) => theme.typography.weights.regular};
+font-size: ${({ theme }) => theme.typography.sizes.xs};
+color: ${({ theme }) => theme.colors.sidebarText};
+font-weight: ${({ theme }) => theme.typography.weights.regular};
 margin-top: 2px;
 letter-spacing: 0.5px;
 text-transform: uppercase;
@@ -54,12 +54,12 @@ export const SidebarNav = styled.nav`
 // Label de seção dentro do menu (ex: "GERAL", "RELATÓRIOS")
 export const MenuSection = styled.p`
 font-size: 10px;
-font-weight: ${({ theme })=> theme.typography.weights.semibold}
-color: ${({theme})=> theme.colors.sidebarText}
+font-weight: ${({ theme }) => theme.typography.weights.semibold}
+color: ${({ theme }) => theme.colors.sidebarText}
 opacity: 0.5;
 text-transform: uppercase;
 letter-spacing: 1px;
-padding: ${({theme})=> `${theme.spacing.md} ${theme.spacing.sm} 4px`};
+padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.sm} 4px`};
 margin: 0;
 `;
 

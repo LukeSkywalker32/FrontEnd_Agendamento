@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useAuth } from "../../hooks/useAuth";
 import { Button, Input } from "../../components/ui";
+import { useAuth } from "../../hooks/useAuth";
 
 // Wrapper externo: full screen dividido em dois painéis
 const Wrapper = styled.div`
@@ -52,6 +52,7 @@ const BrandBody = styled.div`
    justify-content: center;
 `;
 
+// Título grande no meio do painel
 const BrandTitle = styled.h2`
    font-size: ${({ theme }) => theme.typography.sizes["2xl"]};
    font-weight: ${({ theme }) => theme.typography.weights.bold};
@@ -60,6 +61,7 @@ const BrandTitle = styled.h2`
    margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
+// Descrição menor abaixo do título
 const BrandDesc = styled.p`
    font-size: ${({ theme }) => theme.typography.sizes.sm};
    color: ${({ theme }) => theme.colors.sidebarText};
@@ -121,7 +123,6 @@ const ErrorBanner = styled.div`
    font-size: ${({ theme }) => theme.typography.sizes.sm};
 `;
 
-
 export function Login() {
    const { login } = useAuth();
    const navigate = useNavigate();
@@ -137,7 +138,7 @@ export function Login() {
    const roleRoutes = {
       admin: "/admin/dashboard",
       company: "/company/agendamentos",
-      carrier: "/carrier/meus-agendamentos",
+      carrier: "/carrier/meus",
       driver: "/driver/checkin",
    };
 
@@ -159,58 +160,58 @@ export function Login() {
 
    return (
       <Wrapper>
-        <BrandPanel>
-        <div>
-          <BrandLogo>SAT</BrandLogo>
-          <BrandSub>Sistema de Agendamento de Transporte</BrandSub>
-        </div>
+         <BrandPanel>
+            <div>
+               <BrandLogo>SAT</BrandLogo>
+               <BrandSub>Sistema de Agendamento de Transporte</BrandSub>
+            </div>
 
-        <BrandBody>
-        <BrandTitle>Controle total dos seus agendamentos de transporte</BrandTitle>
-        <BrandDesc>
+            <BrandBody>
+               <BrandTitle>Controle total dos seus agendamentos de transporte</BrandTitle>
+               <BrandDesc>
                   Gerencie janelas de horário, transportadoras, motoristas e check-ins em um único
-                  lugar.        
-        </BrandDesc>
-        </BrandBody>
+                  lugar.
+               </BrandDesc>
+            </BrandBody>
 
-        <BrandFooter>₢ {new Date().getFullYear()} Desenvolvido por Luke Skywalker</BrandFooter>
-        </BrandPanel>
+            <BrandFooter>@ {new Date().getFullYear()} Desenvolvido por Luke Skywalker</BrandFooter>
+         </BrandPanel>
 
-        <FormPanel>
-          <FormCard>
-            <FormTitle>Bem-vindo de Volta</FormTitle>
-            <FormSubtitle>Entre com suas credenciais para continuar</FormSubtitle>
-            {/*banner de erro */}
-            {error && <ErrorBanner>{error}</ErrorBanner>}
-            <form onSubmit={handleSubmit}>
-              <Form>
-                <Input
-                id="email"
-                label="E-mail"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={e=> setEmail(e.target.value)}
-                required                
-                />
-                <Input
-                id="password"
-                label="Senha"
-                type="password"
-                placeholder="********"
-                value={password}
-                onChange={e=> setPassword(e.target.value)}
-                required                
-                />
+         <FormPanel>
+            <FormCard>
+               <FormTitle>Bem-vindo de Volta</FormTitle>
+               <FormSubtitle>Entre com suas credenciais para continuar</FormSubtitle>
+               {/*banner de erro */}
+               {error && <ErrorBanner>{error}</ErrorBanner>}
+               <form onSubmit={handleSubmit}>
+                  <Form>
+                     <Input
+                        id="email"
+                        label="E-mail"
+                        type="email"
+                        placeholder="seu@email.com"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        required
+                     />
+                     <Input
+                        id="password"
+                        label="Senha"
+                        type="password"
+                        placeholder="********"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                     />
 
-                {/*Button com disabled durante o loading */}
-                <Button type="submit" fullWidth disabled={loading} style={{marginTop: 8}}>
-                  {loading ? "Entrando..." : "Entrar"}
-                </Button>
-              </Form>
-            </form>
-          </FormCard>
-        </FormPanel>        
+                     {/*Button com disabled durante o loading */}
+                     <Button type="submit" fullWidth disabled={loading} style={{ marginTop: 8 }}>
+                        {loading ? "Entrando..." : "Entrar"}
+                     </Button>
+                  </Form>
+               </form>
+            </FormCard>
+         </FormPanel>
       </Wrapper>
    );
 }
