@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../../components/ui";
@@ -135,21 +135,20 @@ export function Users() {
    const [error, setError] = useState<string | null>(null);
    const navigate = useNavigate();
 
-   // Carrega lista de usuários ao montar
-   useEffect(() => {
-      fetchUsers();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
-
    // Busca usuários via GET /api/admin/users
-   async function fetchUsers() {
+   const fetchUsers = useCallback(async () => {
       try {
          const result = await get<{ status: string; data: User[] }>("/admin/users");
          setUsers(result.data);
       } catch {
          setError("Não foi possível carregar os usuários.");
       }
-   }
+   }, [get]);
+
+   // Carrega lista de usuários ao montar
+   useEffect(() => {
+      fetchUsers();
+   }, [fetchUsers]);
 
    // Desativa usuário via DELETE /api/admin/users/:id
    async function handleDeactivate(id: string, name: string) {
