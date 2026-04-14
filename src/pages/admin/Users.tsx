@@ -276,8 +276,7 @@ export function Users() {
          await put(`/admin/users/${id}/deactivate`, {});
          setUsers(prev => prev.map(u => (u._id === id ? { ...u, isActive: false } : u)));
          toast.warning(`Usuário "${name}" desativado.`);
-      } catch (err) {
-         console.error("Erro ao desativar:", err);
+      } catch {
          toast.error("Erro ao desativar usuário. Verifique o backend.");
       } finally {
          setProcessingUserId(null);
@@ -290,8 +289,7 @@ export function Users() {
          await put(`/admin/users/${id}/activate`, {});
          setUsers(prev => prev.map(u => (u._id === id ? { ...u, isActive: true } : u)));
          toast.success(`Usuário "${name}" ativado com sucesso.`);
-      } catch (err) {
-         console.error("Erro ao ativar:", err);
+      } catch {
          toast.error("Erro ao ativar usuário. Verifique o backend:");
       } finally {
          setProcessingUserId(null);

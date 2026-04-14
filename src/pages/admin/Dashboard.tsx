@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Card } from "../../components/ui";
 import { useApi } from "../../hooks/useApi";
@@ -96,17 +96,18 @@ export function Dashboard() {
    const { get, isLoading } = useApi();
    const [data, setData] = useState<DashboardData | null>(null);
 
-   useEffect(() => {
-      async function fetchDashboard() {
-         try {
-            const result = await get<{ status: string; data: DashboardData }>("/admin/dashboard");
-            setData(result.data);
-         } catch {
-            //erro ja tratado pelo hook useApi
-         }
+   const fetchDashboard = useCallback(async () => {
+      try {
+         const result = await get<{ status: string; data: DashboardData }>("/admin/dashboard");
+         setData(result.data);
+      } catch {
+         //erro ja tratado pelo hook useApi
       }
+   }, [get]);
+
+   useEffect(() => {
       fetchDashboard();
-   }, []);
+   }, [fetchDashboard]);
 
    return (
       <Page>

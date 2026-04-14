@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useApi } from "../../hooks/useApi";
 
@@ -134,12 +134,7 @@ export function AdminSchedulings() {
    const [schedulings, setSchedulings] = useState<Scheduling[]>([]);
    const [filter, setFilter] = useState("todos"); // filtro ativo
 
-   useEffect(() => {
-      fetchSchedulings();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [filter]); // Re-busca quando o filtro muda
-
-   async function fetchSchedulings() {
+   const fetchSchedulings = useCallback(async () => {
       try {
          // Se o filtro for "todos", não passa query param (retorna todos)
          const url =
@@ -150,7 +145,11 @@ export function AdminSchedulings() {
       } catch {
          setSchedulings([]);
       }
-   }
+   }, [filter, get]);
+
+   useEffect(() => {
+      fetchSchedulings();
+   }, [fetchSchedulings]);
 
    // Formata data ISO para DD/MM/YYYY
    function formatDate(iso: string) {
