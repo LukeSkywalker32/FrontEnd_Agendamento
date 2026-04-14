@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Button, Input } from "../../components/ui";
 import { useApi } from "../../hooks/useApi";
@@ -115,11 +116,6 @@ interface FormData {
    phone: string;
 }
 
-// Regex que define o que um e-mail PODE ter:
-// - Antes do @: letras a-z, números, pontos, hífens, underscores
-// - Sem acentos (á, é, ç, ã, ú...), sem espaços, sem caracteres especiais
-// - Domínio: letras, números, pontos, hífens
-// - TLD obrigatório: .com, .br, etc.
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 function validateEmail(email: string): string | null {
@@ -154,18 +150,11 @@ export function RegisterUser() {
       phone: "",
    });
 
-   // Banner de feedback: null enquanto não houve tentativa
-   const [feedback, setFeedback] = useState<{
-      type: "success" | "error";
-      message: string;
-   } | null>(null);
-
    // Atualiza um campo do form pelo nome do input
    // Evita ter um handler separado por campo
    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
       const { name, value } = e.target;
       setForm(prev => ({ ...prev, [name]: value }));
-
       // Valida o e-mail em tempo real e mostra mensagem de erro
       if (name === "email") {
          setEmailError(validateEmail(value));
@@ -175,8 +164,6 @@ export function RegisterUser() {
 
    async function handleSubmit(e: React.FormEvent) {
       e.preventDefault();
-      setFeedback(null);
-
       const emailValidationError = validateEmail(form.email);
       if (emailValidationError) {
          setEmailError(emailValidationError);
@@ -187,7 +174,7 @@ export function RegisterUser() {
          // POST /api/auth/register — exige token de admin no header
          // O header já está configurado via api.defaults pelo login
          await post("/auth/register", form);
-         setFeedback({ type: "success", message: "Usuário cadastrado com sucesso!" });
+         toast.success("Usuário cadastrado com sucesso!");
          // Limpa o form após sucesso
          setForm({ name: "", email: "", password: "", role: "company", document: "", phone: "" });
          //Limpa erro de email
@@ -197,7 +184,7 @@ export function RegisterUser() {
          const message =
             (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
             "Erro ao cadastrar usuário.";
-         setFeedback({ type: "error", message });
+         toast.error(message);
       }
    }
 
@@ -209,8 +196,6 @@ export function RegisterUser() {
          </PageHeader>
 
          <FormCard>
-            {feedback && <Banner $type={feedback.type}>{feedback.message}</Banner>}
-
             <form onSubmit={handleSubmit}>
                <Stack>
                   {/* Linha 1: Nome + E-mail */}
