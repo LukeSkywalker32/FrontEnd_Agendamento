@@ -19,7 +19,7 @@ interface AuthProviderProps {
    children: ReactNode;
 }
 
-export const AuthContext = createContext({} as AuthContextData);
+export const AuthContext = createContext<AuthContextData |null>(null);
 
 export function AuthProvider({ children }: AuthProviderProps) {
    const [user, setUser] = useState<User | null>(null);
@@ -45,8 +45,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
          email,
          password,
       });
-      const { user, tokens } = response.data;
-      const token = tokens.access;
+      const { user, tokens } = response.data.data;
+      const token = tokens.accessToken;
       setUser(user);
       setToken(token);
 

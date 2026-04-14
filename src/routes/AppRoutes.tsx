@@ -9,6 +9,9 @@ import { Checkin } from "../pages/checkin/Checkin";
 import { Agendamentos } from "../pages/company/Agendamentos";
 import { GerenciarSlots } from "../pages/company/GerenciarSlots";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { AdminSchedulings } from "../pages/admin/Schedulings";
+import { RegisterUser } from "../pages/admin/RegisterUser";
+import { Users } from "../pages/admin/Users";
 
 function RootRedirect() {
    const { isAuthenticated, user } = useAuth();
@@ -39,6 +42,9 @@ export function AppRoutes() {
                   {/* Admin */}
                   <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
                      <Route path="/admin/dashboard" element={<Dashboard />} />
+                     <Route path="/admin/usuarios" element={<Users />} />
+                     <Route path="/admin/registrar" element={<RegisterUser />} />
+                     <Route path="/admin/agendamentos" element={<AdminSchedulings />} />
                   </Route>
 
                   {/* Company */}
