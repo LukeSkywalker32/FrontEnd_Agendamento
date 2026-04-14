@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Card } from "../../components/ui";
-import {useApi} from "../../hooks/useApi";
+import { useApi } from "../../hooks/useApi";
 
-
-interface DashboardData {  
-  totalUsuarios: number;
-  totalEmpresas: number;
-  totalTransportadoras: number;
-  totalAgendamentos: number;
-  agendamentosPendentes: number;
-  agendamentosConfirmados: number;
-  totalCheckins: number;
+interface DashboardData {
+   totalUsuarios: number;
+   totalEmpresas: number;
+   totalTransportadoras: number;
+   totalAgendamentos: number;
+   agendamentosPendentes: number;
+   agendamentosConfirmados: number;
+   totalCheckins: number;
 }
 
 // Área scrollável do conteúdo interno da página
@@ -88,28 +87,26 @@ const Skeleton = styled.div`
    animation: pulse 1.5s ease-in-out infinite;
 `;
 
-function StatValue ({ value, loading }: {value: number; loading: boolean}) {
-  if(loading) return <Skeleton />
-  return <CardValue>{value}</CardValue>
+function StatValue({ value, loading }: { value: number; loading: boolean }) {
+   if (loading) return <Skeleton />;
+   return <CardValue>{value}</CardValue>;
 }
 
 export function Dashboard() {
+   const { get, isLoading } = useApi();
+   const [data, setData] = useState<DashboardData | null>(null);
 
-  const { get, isLoading} = useApi()
-  const [data, setData ] = useState<DashboardData | null>(null)
-
-  useEffect(() => {
-    async function fetchDashboard() {
-      try {
-        const result = await get<{ status: string; data: DashboardData}>("/admin/dashboard"
-        );
-        setData(result.data);
-      } catch {
-        //erro ja tratado pelo hook useApi
+   useEffect(() => {
+      async function fetchDashboard() {
+         try {
+            const result = await get<{ status: string; data: DashboardData }>("/admin/dashboard");
+            setData(result.data);
+         } catch {
+            //erro ja tratado pelo hook useApi
+         }
       }
-    }
-    fetchDashboard();
-  }, []);
+      fetchDashboard();
+   }, []);
 
    return (
       <Page>
@@ -118,7 +115,7 @@ export function Dashboard() {
             <Subtitle>Visão geral do sistema de agendamento</Subtitle>
          </PageHeader>
 
-{/* ── Seção 1: Usuários ── */}
+         {/* ── Seção 1: Usuários ── */}
          <SectionTitle>Usuários cadastrados</SectionTitle>
          <CardGrid>
             <Card title="Total de usuários ativos">

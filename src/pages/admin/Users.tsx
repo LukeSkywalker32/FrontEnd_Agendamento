@@ -143,8 +143,13 @@ const DeleteIconButton = styled.button`
    transition: all 0.15s ease;
    flex-shrink: 0;
 
-   &:hover {
+   &:hover:not(:disabled) {
       background: ${({ theme }) => theme.colors.status.errorBg};
+   }
+
+   &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
    }
 
    svg {
@@ -247,6 +252,7 @@ export function Users() {
 
    const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
    const [deleting, setDeleting] = useState(false);
+   const [processingUserId, setProcessingUserId] = useState<string | null>(null);
 
    // Busca usuários via GET /api/admin/users
    const fetchUsers = useCallback(async () => {
@@ -265,22 +271,30 @@ export function Users() {
 
    // Desativa usuário via (PATCH /api/admin/users/:id/deactivate)
    async function handleDeactivate(id: string, name: string) {
+      setProcessingUserId(id);
       try {
-         await put(`/admin/users/${id}/deactivate`);
+         await put(`/admin/users/${id}/deactivate`, {});
          setUsers(prev => prev.map(u => (u._id === id ? { ...u, isActive: false } : u)));
          toast.warning(`Usuário "${name}" desativado.`);
-      } catch {
-         toast.error("Erro ao desativar usuário. Tente novamente");
+      } catch (err) {
+         console.error("Erro ao desativar:", err);
+         toast.error("Erro ao desativar usuário. Verifique o backend.");
+      } finally {
+         setProcessingUserId(null);
       }
    }
    // Ativa usuário via (PATCH /api/admin/users/:id/activate)
    async function handleActivate(id: string, name: string) {
+      setProcessingUserId(id);
       try {
-         await put(`/admin/users/${id}/activate`);
+         await put(`/admin/users/${id}/activate`, {});
          setUsers(prev => prev.map(u => (u._id === id ? { ...u, isActive: true } : u)));
          toast.success(`Usuário "${name}" ativado com sucesso.`);
-      } catch {
-         toast.error("Erro ao ativar usuário. Tente novamente.");
+      } catch (err) {
+         console.error("Erro ao ativar:", err);
+         toast.error("Erro ao ativar usuário. Verifique o backend:");
+      } finally {
+         setProcessingUserId(null);
       }
    }
 
@@ -358,9 +372,12 @@ export function Users() {
                                     <Button
                                        variant="ghost"
                                        onClick={() => handleDeactivate(user._id, user.name)}
+                                       disabled={processingUserId === user._id}
                                        style={{ fontSize: "0.75rem", padding: "4px 10px" }}
                                     >
-                                       Desativar
+                                       {processingUserId === user._id
+                                          ? "Desativando..."
+                                          : "Desativar"}
                                     </Button>
                                  ) : (
                                     /* Usuário inativo → botão Ativar + lixeira */
@@ -368,9 +385,10 @@ export function Users() {
                                        <Button
                                           variant="secondary"
                                           onClick={() => handleActivate(user._id, user.name)}
+                                          disabled={processingUserId === user._id}
                                           style={{ fontSize: "0.75rem", padding: "4px 10px" }}
                                        >
-                                          Ativar
+                                          {processingUserId === user._id ? "Ativando..." : "Ativar"}
                                        </Button>
 
                                        <DeleteIconButton
@@ -378,6 +396,7 @@ export function Users() {
                                           onClick={() =>
                                              setDeleteTarget({ id: user._id, name: user.name })
                                           }
+                                          disabled={processingUserId === user._id}
                                        >
                                           <TrashIcon />
                                        </DeleteIconButton>
