@@ -30,7 +30,7 @@
       "enabled": true,
       "formatWithErrors": false,
       "indentStyle": "space",
-      "indentWidth": 3,
+      "indentWidth": 2,
       "lineWidth": 100
    },
    "javascript": {
