@@ -52,6 +52,13 @@ export function useApi() {
       [request],
    );
 
+   const patch = useCallback(
+      <T, B = unknown>(url: string, body?: B, config?: AxiosRequestConfig) => {
+         return request<T>({ ...config, method: "PATCH", url, data: body });
+      },
+      [request],
+   );
+
    const remove = useCallback(
       <T>(url: string, config?: AxiosRequestConfig) => {
          return request<T>({ ...config, method: "DELETE", url });
@@ -65,6 +72,7 @@ export function useApi() {
       get,
       post,
       put,
+      patch,
       remove,
    };
 }

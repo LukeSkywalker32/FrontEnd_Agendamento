@@ -245,7 +245,7 @@ function TrashIcon() {
 }
 
 export function Users() {
-   const { get, put, remove, isLoading } = useApi();
+   const { get, patch, remove, isLoading } = useApi();
    const [users, setUsers] = useState<User[]>([]);
    const [error, setError] = useState<string | null>(null);
    const navigate = useNavigate();
@@ -273,7 +273,7 @@ export function Users() {
    async function handleDeactivate(id: string, name: string) {
       setProcessingUserId(id);
       try {
-         await put(`/admin/users/${id}/deactivate`, {});
+         await patch(`/admin/users/${id}/deactivate`, {});
          setUsers(prev => prev.map(u => (u._id === id ? { ...u, isActive: false } : u)));
          toast.warning(`Usuário "${name}" desativado.`);
       } catch {
@@ -286,7 +286,7 @@ export function Users() {
    async function handleActivate(id: string, name: string) {
       setProcessingUserId(id);
       try {
-         await put(`/admin/users/${id}/activate`, {});
+         await patch(`/admin/users/${id}/activate`, {});
          setUsers(prev => prev.map(u => (u._id === id ? { ...u, isActive: true } : u)));
          toast.success(`Usuário "${name}" ativado com sucesso.`);
       } catch {
