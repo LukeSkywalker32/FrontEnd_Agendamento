@@ -160,10 +160,12 @@ export function MeusAgendamentos() {
 
   const fetchSchedulings = useCallback(async () => {
     try {
-      const url = filter === "todos" ? "carrier/schedules" : `carrier/schedules?status=${filter}`;
+      const url =
+        filter === "todos" ? "carrier/schedulings" : `carrier/schedulings?status=${filter}`;
       const result = await get<{ status: string; data: Scheduling[] }>(url);
       setSchedulings(result.data);
-    } catch {
+    } catch (err) {
+      console.error("Erro ao buscar agendamentos:", err);
       setSchedulings([]);
     }
   }, [get, filter]);
