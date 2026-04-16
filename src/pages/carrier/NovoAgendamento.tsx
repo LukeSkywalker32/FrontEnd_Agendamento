@@ -201,12 +201,19 @@ export function NovoAgendamento() {
         return;
       }
       try {
-        const response = await get<TimeWindow[]>(
-          `/carrier/companies/${form.companyId}/time-windows`,
-        );
-        if (response && Array.isArray(response)) {
-          setTimeWindows(response);
+        const response = await get<unknown>(`/carrier/companies/${form.companyId}/time-windows`);
+
+        //back end retorna { status: "success", data: [...]}
+        if (Array.isArray(response)) {
+          setTimeWindows(response as TimeWindow[]);
+        } else if (
+          response &&
+          typeof response === "object" &&
+          Array.isArray((response as any).data)
+        ) {
+          setTimeWindows((response as any).data as TimeWindow[]);
         } else {
+          console.warn("Formato inesperado de time-windows:", response);
           setTimeWindows([]);
         }
       } catch (err) {
