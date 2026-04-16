@@ -174,7 +174,6 @@ export function NovoAgendamento() {
     async function loadCompanies() {
       try {
         const resp = await get<unknown>("/carrier/companies");
-        console.debug("/carrier/companies response:", resp);
 
         // Suporta retorno direto como Company[] ou { data: Company[] }
         if (Array.isArray(resp)) {
@@ -260,7 +259,7 @@ export function NovoAgendamento() {
       });
 
       toast.success("Agendamento criado com sucesso!");
-      navigate("/carrier/agendamentos");
+      navigate("/carrier/meus");
     } catch (err: any) {
       const message = err.response?.data?.message ?? "Erro ao criar agendamento";
       toast.error(message);
