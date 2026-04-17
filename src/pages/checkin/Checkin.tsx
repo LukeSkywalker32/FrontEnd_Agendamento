@@ -191,7 +191,7 @@ export function Checkin() {
 
     try {
       const result = await get<{ status: string; data: SchedulingFromApi[] }>(
-        `/driver/schedulings${cleanCpf}`,
+        `/driver/schedulings/${cleanCpf}`,
       );
       setSchedulings(result.data);
       setSearched(true);

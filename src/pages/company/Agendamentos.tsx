@@ -17,7 +17,7 @@ interface Scheduling {
   cargoDescription: string;
   status: string;
   documentStatus: string;
-  documents: { originalName: string; uploadedAt: string }[];
+  documents: { filename: string; originalName: string; uploadedAt: string }[];
   rejectionReason: string;
   createdAt: string;
   carrierId: { _id: string; name: string; document: string; phone?: string } | null;
@@ -187,6 +187,7 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   on_time: { bg: "#DCFCE7", color: "#14532D" },
   late: { bg: "#FEE2E2", color: "#7F1D1D" },
   early: { bg: "#FEF3C7", color: "#92400E" },
+  not_attached: { bg: "#F1F5F9", color: "#475569" },
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -200,6 +201,7 @@ const STATUS_LABELS: Record<string, string> = {
   on_time: "No horário",
   late: "Atrasado",
   early: "Adiantado",
+  note_attached: "Sem Documento",
 };
 
 const StatusBadge = styled.span<{ $status: string }>`
@@ -682,15 +684,34 @@ export function Agendamentos() {
             {selected.documents && selected.documents.length > 0 && (
               <>
                 <Label style={{ display: "block", marginTop: "16px" }}>Arquivos enviados:</Label>
-                {selected.documents.map((doc, i) => (
-                  <DetailRow key={`${doc.originalName}-${i}`}>
-                    <DetailLabel>📄 {doc.originalName}</DetailLabel>
+                {selected.documents.map(doc => (
+                  <DetailRow key={doc.filename}>
+                    <DetailLabel>
+                      <a
+                        href={`http://localhost:3333/uploads/${doc.filename}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        📄 {doc.originalName}
+                      </a>
+                    </DetailLabel>
                     <DetailValue style={{ fontSize: "0.75rem", opacity: 0.6 }}>
                       {formatDate(doc.uploadedAt)}
                     </DetailValue>
                   </DetailRow>
                 ))}
               </>
+            )}
+
+            {/* modal para quando não tem documentos */}
+            {selected.documentStatus === "not_attached" && (
+              <RejectionBox
+                style={{ background: "#FEF3C7", borderColor: "#FDE68A", marginTop: "12px" }}
+              >
+                <RejectionText style={{ color: "#92400E" }}>
+                  ⏳ Nenhum documento enviado ainda. Aguarde o envio da transportadora.
+                </RejectionText>
+              </RejectionBox>
             )}
 
             {/* ════════════════════════════════════

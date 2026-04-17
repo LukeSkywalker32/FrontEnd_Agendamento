@@ -182,12 +182,11 @@ export function NovoAgendamento() {
         } else if (resp && typeof resp === "object" && Array.isArray((resp as any).data)) {
           setCompanies((resp as any).data as Company[]);
         } else {
-          console.warn("Formato inesperado de /carrier/companies:", resp);
           setCompanies([]);
         }
-      } catch (err) {
-        console.error("Erro ao carregar empresas:", err);
-        toast.error("Erro ao carregar empresas");
+      } catch (err: any) {
+        const message = err.response?.data?.message || "Erro ao carregar empresas";
+        toast.error(`Erro ao carregar empresas: ${message}`);
       }
     }
     loadCompanies();
@@ -213,12 +212,11 @@ export function NovoAgendamento() {
         ) {
           setTimeWindows((response as any).data as TimeWindow[]);
         } else {
-          console.warn("Formato inesperado de time-windows:", response);
           setTimeWindows([]);
         }
-      } catch (err) {
-        console.error("Erro ao carregar janelas de tempo:", err);
-        toast.error("Erro ao carregar janelas de tempo");
+      } catch (err: any) {
+        const message = err.response?.data?.message || "Erro ao carregar janelas de tempo";
+        toast.error(`Erro ao carregar janelas de tempo: ${message}`);
       }
     }
     loadTimeWindows();
@@ -312,8 +310,8 @@ export function NovoAgendamento() {
                   <option value="">Selecione um horário</option>
                   {timeWindows.map(window => (
                     <option key={window._id} value={window._id}>
-                      {formatDateOnly(window.date)} - {window.startTime} às{" "}
-                      {window.endTime} ({window.maxVehicles - window.currentCount} vagas)
+                      {formatDateOnly(window.date)} - {window.startTime} às {window.endTime} (
+                      {window.maxVehicles - window.currentCount} vagas)
                     </option>
                   ))}
                 </Select>

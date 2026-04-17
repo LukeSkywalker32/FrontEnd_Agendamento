@@ -17,7 +17,7 @@ interface Scheduling {
   cargoDescription: string;
   status: string;
   documentStatus: string;
-  documents: { originalName: string; uploadedAt: string }[];
+  documents: { filename: string; originalName: string; uploadedAt: string }[];
   rejectionReason: string;
   createdAt: string;
   companyId: { _id: string; name: string; document: string; phone?: string } | null;
@@ -454,8 +454,9 @@ export function MeusAgendamentos() {
 
     try {
       const formData = new FormData();
-      // biome-ignore lint/suspicious/useIterableCallbackReturn: <explanation>
-      resendFiles.forEach(file => formData.append("documents", file));
+      resendFiles.forEach(file => {
+        formData.append("documents", file);
+      });
 
       await post(`/carrier/schedulings/${selected._id}/documents`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -675,9 +676,17 @@ export function MeusAgendamentos() {
                 <DetailLabel style={{ display: "block", marginTop: "12px" }}>
                   Arquivos enviados:
                 </DetailLabel>
-                {selected.documents.map((doc, i) => (
-                  <DetailRow key={`${doc.originalName}-${i}`}>
-                    <DetailLabel>📄 {doc.originalName}</DetailLabel>
+                {selected.documents.map(doc => (
+                  <DetailRow key={doc.filename}>
+                    <DetailLabel>
+                      <a
+                        href={`http://localhost:3333/uploads/${doc.filename}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        📄 {doc.originalName}
+                      </a>
+                    </DetailLabel>
                     <DetailValue style={{ fontSize: "0.75rem", opacity: 0.6 }}>
                       {formatDate(doc.uploadedAt)}
                     </DetailValue>
