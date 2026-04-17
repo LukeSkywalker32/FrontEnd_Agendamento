@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Button, Input } from "../../components/ui";
 import { useApi } from "../../hooks/useApi";
+import { formatDate, formatDateOnly } from "../../utils/dateUtils";
 
 /* ─── Interfaces ─── */
 
@@ -352,9 +353,7 @@ export function MeusAgendamentos() {
 
   /* ── Helpers ── */
 
-  function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString("pt-BR");
-  }
+  // formatDate e formatDateOnly importados de utils/dateUtils
 
   function closeModal() {
     setModalType(null);
@@ -522,7 +521,7 @@ export function MeusAgendamentos() {
                   </Td>
                   <Td>
                     {s.timeWindowId
-                      ? `${formatDate(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
+                      ? `${formatDateOnly(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
                       : "—"}
                   </Td>
                   <Td>
@@ -638,7 +637,7 @@ export function MeusAgendamentos() {
               <DetailLabel>Horário</DetailLabel>
               <DetailValue>
                 {selected.timeWindowId
-                  ? `${formatDate(selected.timeWindowId.date)} ${selected.timeWindowId.startTime}–${selected.timeWindowId.endTime}`
+                  ? `${formatDateOnly(selected.timeWindowId.date)} ${selected.timeWindowId.startTime}–${selected.timeWindowId.endTime}`
                   : "—"}
               </DetailValue>
             </DetailRow>
@@ -677,10 +676,10 @@ export function MeusAgendamentos() {
                   Arquivos enviados:
                 </DetailLabel>
                 {selected.documents.map((doc, i) => (
-                  <DetailRow key={i}>
+                  <DetailRow key={`${doc.originalName}-${i}`}>
                     <DetailLabel>📄 {doc.originalName}</DetailLabel>
                     <DetailValue style={{ fontSize: "0.75rem", opacity: 0.6 }}>
-                      {new Date(doc.uploadedAt).toLocaleDateString("pt-BR")}
+                      {formatDate(doc.uploadedAt)}
                     </DetailValue>
                   </DetailRow>
                 ))}

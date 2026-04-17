@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Button, Input } from "../../components/ui";
 import { useApi } from "../../hooks/useApi";
+import { formatDate, formatDateOnly, formatDateTime } from "../../utils/dateUtils";
 
 /* ─── Interfaces ─── */
 
@@ -374,19 +375,7 @@ export function Agendamentos() {
       HELPERS
       ════════════════════════════════════════════ */
 
-  function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString("pt-BR");
-  }
-
-  function formatDateTime(iso: string) {
-    return new Date(iso).toLocaleString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
+  // formatDate, formatDateOnly e formatDateTime importados de utils/dateUtils
 
   function closeModal() {
     setModalType(null);
@@ -518,7 +507,7 @@ export function Agendamentos() {
                       </Td>
                       <Td>
                         {s.timeWindowId
-                          ? `${formatDate(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
+                          ? `${formatDateOnly(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
                           : "—"}
                       </Td>
                       <Td>
@@ -661,7 +650,7 @@ export function Agendamentos() {
               <DetailLabel>Horário</DetailLabel>
               <DetailValue>
                 {selected.timeWindowId
-                  ? `${formatDate(selected.timeWindowId.date)} ${selected.timeWindowId.startTime}–${selected.timeWindowId.endTime}`
+                  ? `${formatDateOnly(selected.timeWindowId.date)} ${selected.timeWindowId.startTime}–${selected.timeWindowId.endTime}`
                   : "—"}
               </DetailValue>
             </DetailRow>
@@ -694,7 +683,7 @@ export function Agendamentos() {
               <>
                 <Label style={{ display: "block", marginTop: "16px" }}>Arquivos enviados:</Label>
                 {selected.documents.map((doc, i) => (
-                  <DetailRow key={i}>
+                  <DetailRow key={`${doc.originalName}-${i}`}>
                     <DetailLabel>📄 {doc.originalName}</DetailLabel>
                     <DetailValue style={{ fontSize: "0.75rem", opacity: 0.6 }}>
                       {formatDate(doc.uploadedAt)}

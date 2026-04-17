@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Button, Input } from "../../components/ui";
 import { useApi } from "../../hooks/useApi";
+import { formatDateOnly } from "../../utils/dateUtils";
 
 /* ─── Interfaces ─── */
 
@@ -291,9 +292,7 @@ export function GerenciarSlots() {
       HELPERS
       ════════════════════════════════════════════ */
 
-  function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString("pt-BR");
-  }
+  // formatDateOnly importado de utils/dateUtils — trata datas UTC midnight sem shift de fuso
 
   function closeModal() {
     setModalType(null);
@@ -499,7 +498,7 @@ export function GerenciarSlots() {
                     const pct = tw.maxVehicles > 0 ? (tw.currentCount / tw.maxVehicles) * 100 : 0;
                     return (
                       <tr key={tw._id}>
-                        <Td>{formatDate(tw.date)}</Td>
+                        <Td>{formatDateOnly(tw.date)}</Td>
                         <Td>
                           {tw.startTime} – {tw.endTime}
                         </Td>
@@ -576,7 +575,7 @@ export function GerenciarSlots() {
                 <tbody>
                   {blockedDates.map(bd => (
                     <tr key={bd._id}>
-                      <Td>{formatDate(bd.date)}</Td>
+                      <Td>{formatDateOnly(bd.date)}</Td>
                       <Td>{bd.reason}</Td>
                       <Td>
                         <Button
@@ -681,7 +680,7 @@ export function GerenciarSlots() {
           <ModalBox onClick={e => e.stopPropagation()}>
             <ModalTitle>Editar Janela de Horário</ModalTitle>
             <WarningText style={{ marginBottom: "12px" }}>
-              Data: <strong>{formatDate(selectedTW.date)}</strong> — Agendamentos atuais:{" "}
+              Data: <strong>{formatDateOnly(selectedTW.date)}</strong> — Agendamentos atuais:{" "}
               <strong>{selectedTW.currentCount}</strong>
             </WarningText>
             <form onSubmit={handleSubmitEditTW}>
@@ -752,7 +751,7 @@ export function GerenciarSlots() {
             <WarningText>
               Tem certeza que deseja excluir a janela de{" "}
               <strong>
-                {formatDate(selectedTW.date)} ({selectedTW.startTime}–{selectedTW.endTime})
+                {formatDateOnly(selectedTW.date)} ({selectedTW.startTime}–{selectedTW.endTime})
               </strong>
               ?
             </WarningText>
@@ -824,7 +823,7 @@ export function GerenciarSlots() {
           <ModalBox onClick={e => e.stopPropagation()} $width="440px">
             <ModalTitle>Desbloquear Data</ModalTitle>
             <WarningText>
-              Deseja desbloquear o dia <strong>{formatDate(selectedBD.date)}</strong>?
+              Deseja desbloquear o dia <strong>{formatDateOnly(selectedBD.date)}</strong>?
             </WarningText>
             <WarningText style={{ marginTop: "8px" }}>
               Motivo original: <em>{selectedBD.reason}</em>

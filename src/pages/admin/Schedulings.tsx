@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useApi } from "../../hooks/useApi";
+import { formatDate, formatDateOnly } from "../../utils/dateUtils";
 
 // Tipagem baseada no que /api/admin/schedulings retorna (com populate)
 interface Scheduling {
@@ -151,10 +152,7 @@ export function AdminSchedulings() {
       fetchSchedulings();
    }, [fetchSchedulings]);
 
-   // Formata data ISO para DD/MM/YYYY
-   function formatDate(iso: string) {
-      return new Date(iso).toLocaleDateString("pt-BR");
-   }
+   // formatDate e formatDateOnly importados de utils/dateUtils
 
    return (
       <Page>
@@ -206,7 +204,7 @@ export function AdminSchedulings() {
                            </Td>
                            <Td>
                               {s.timeWindowId
-                                 ? `${formatDate(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
+                                 ? `${formatDateOnly(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
                                  : "—"}
                            </Td>
                            <Td>

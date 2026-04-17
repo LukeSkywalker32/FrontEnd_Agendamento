@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Button, Input } from "../../components/ui";
 import { useApi } from "../../hooks/useApi";
+import { formatDateOnly } from "../../utils/dateUtils";
 
 const Page = styled.main`
    flex: 1;
@@ -311,7 +312,7 @@ export function NovoAgendamento() {
                   <option value="">Selecione um horário</option>
                   {timeWindows.map(window => (
                     <option key={window._id} value={window._id}>
-                      {new Date(window.date).toLocaleDateString("pt-BR")} - {window.startTime} às{" "}
+                      {formatDateOnly(window.date)} - {window.startTime} às{" "}
                       {window.endTime} ({window.maxVehicles - window.currentCount} vagas)
                     </option>
                   ))}

@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Button, Input } from "../../components/ui";
 import { useApi } from "../../hooks/useApi";
+import { formatDateOnly } from "../../utils/dateUtils";
 
 /* ─── Interfaces espelho do backend ─── */
 
@@ -221,10 +222,7 @@ export function Checkin() {
     }
   }
 
-  // Fromatar data para exibição
-  function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString("pt-BR");
-  }
+  // formatDateOnly importado de utils/dateUtils — trata datas UTC midnight sem shift de fuso
 
   //Verifica se existe ao menos 1 agendamento confirmado para o CPF pesquisado
   const hasConfirmed = schedulings.some(s => s.status === "confirmed");
@@ -296,7 +294,7 @@ export function Checkin() {
                     <CardLabel>Horário</CardLabel>
                     <CardValue>
                       {s.timeWindowId
-                        ? `${formatDate(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
+                        ? `${formatDateOnly(s.timeWindowId.date)} ${s.timeWindowId.startTime}–${s.timeWindowId.endTime}`
                         : "—"}
                     </CardValue>
                   </CardRow>
