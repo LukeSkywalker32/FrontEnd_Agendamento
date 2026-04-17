@@ -389,7 +389,7 @@ export function NovoAgendamento() {
                   type="file"
                   multiple
                   onChange={handleFileChange}
-                  accept=".pdf,image/*"
+                  accept=".pdf,.jpg,.png,.jpeg"
                 />
               </FormGroup>
             </Row>

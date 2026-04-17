@@ -688,7 +688,7 @@ export function Agendamentos() {
                   <DetailRow key={doc.filename}>
                     <DetailLabel>
                       <a
-                        href={`http://localhost:3333/uploads/${doc.filename}`}
+                        href={`http://localhost:3333/documents/uploads/${doc.filename}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
