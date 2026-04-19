@@ -229,6 +229,7 @@ export function NovoAgendamento() {
     setForm(prev => ({ ...prev, [name]: value }));
   }
 
+  // Tipos de imagem que NÃO são permitidos como documento
   const IMAGE_MIMES = [
     "image/jpeg",
     "image/png",
@@ -405,13 +406,13 @@ export function NovoAgendamento() {
                 </Select>
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="documents">Documentos (PDF/Imagens)</Label>
+                <Label htmlFor="documents">Documentos (PDF)</Label>
                 <FileInput
                   id="documents"
                   type="file"
                   multiple
                   onChange={handleFileChange}
-                  accept=".pdf,.jpg,.png,.jpeg"
+                  accept=".pdf"
                 />
               </FormGroup>
             </Row>
