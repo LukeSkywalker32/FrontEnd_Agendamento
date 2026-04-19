@@ -116,11 +116,16 @@ const Td = styled.td`
 `;
 
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
+  // STATUS DE AGENDAMENTO
   pending: { bg: "#FEF3C7", color: "#92400E" },
   confirmed: { bg: "#DCFCE7", color: "#14532D" },
   checked_in: { bg: "#DBEAFE", color: "#1E3A5F" },
   completed: { bg: "#F1F5F9", color: "#475569" },
   cancelled: { bg: "#FEE2E2", color: "#7F1D1D" },
+  // STATUS DE DOCUMETENTOS
+  not_attached: { bg: "#F1F5F9", color: "#475569" },
+  approved: { bg: "#DCFCE7", color: "#14532D" },
+  rejected: { bg: "#FEE2E2", color: "#7F1D1D" },
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -532,26 +537,30 @@ export function MeusAgendamentos() {
                   </Td>
                   <Td>
                     <StatusBadge $status={s.documentStatus}>
-                      {s.documentStatus === "pending"
-                        ? "Análise"
-                        : s.documentStatus === "approved"
-                          ? "✓ Aprovado"
-                          : "✗ Rejeitado"}
+                      {s.documentStatus === "not_attached"
+                        ? "Sem Doc."
+                        : s.documentStatus === "pending"
+                          ? "Em análise"
+                          : s.documentStatus === "approved"
+                            ? "✓ Aprovado"
+                            : "✗ Rejeitado"}
                     </StatusBadge>
                   </Td>
                   <Td>{formatDate(s.createdAt)}</Td>
                   <Td>
                     <ActionGroup>
                       {/* REENVIAR: docs rejeitados + status pending */}
-                      {s.status === "pending" && s.documentStatus === "rejected" && (
-                        <Button
-                          variant="secondary"
-                          style={{ fontSize: "0.7rem", padding: "4px 8px" }}
-                          onClick={() => handleOpenResend(s)}
-                        >
-                          Reenviar
-                        </Button>
-                      )}
+                      {s.status === "pending" &&
+                        (s.documentStatus === "rejected" ||
+                          s.documentStatus === "not_attached") && (
+                          <Button
+                            variant="secondary"
+                            style={{ fontSize: "0.7rem", padding: "4px 8px" }}
+                            onClick={() => handleOpenResend(s)}
+                          >
+                            {s.documentStatus === "rejected" ? "Reenviar Doc." : "Enviar Doc."}
+                          </Button>
+                        )}
 
                       {/* EDITAR: só se pending */}
                       {s.status === "pending" && (
@@ -680,7 +689,7 @@ export function MeusAgendamentos() {
                   <DetailRow key={doc.filename}>
                     <DetailLabel>
                       <a
-                        href={`http://localhost:3333/uploads/${doc.filename}`}
+                        href={`http://localhost:3333/uploads/documents/${doc.filename}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -831,7 +840,11 @@ export function MeusAgendamentos() {
       {modalType === "resend" && selected && (
         <Overlay onClick={closeModal}>
           <ModalBox onClick={e => e.stopPropagation()} $width="480px">
-            <ModalTitle>Reenviar Documentos</ModalTitle>
+            <ModalTitle>
+              {selected.documentStatus === "not_attached"
+                ? "Enviar Documentos"
+                : "Reenviar Documentos"}
+            </ModalTitle>
 
             {/* Mostra motivo da rejeição */}
             {selected.rejectionReason && (
@@ -841,9 +854,18 @@ export function MeusAgendamentos() {
             )}
 
             <WarningText>
-              Selecione os novos documentos para o agendamento de{" "}
-              <strong>{selected.driverName}</strong>. Os documentos serão adicionados aos já
-              existentes e o status voltará para "Em análise".
+              {selected.documentStatus === "not_attached" ? (
+                <>
+                  Selecione os documentos para o agendamento de{" "}
+                  <strong>{selected.driverName}</strong> Após o envio a empresa podera valida-los.
+                </>
+              ) : (
+                <>
+                  Selecione os novos documentos para o agendamento de{" "}
+                  <strong>{selected.driverName}</strong>. Os documentos serão adicionados aos já
+                  existentes e o status voltará para "Em análise".
+                </>
+              )}
             </WarningText>
 
             <form onSubmit={handleSubmitResend}>

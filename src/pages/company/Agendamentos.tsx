@@ -201,7 +201,7 @@ const STATUS_LABELS: Record<string, string> = {
   on_time: "No horário",
   late: "Atrasado",
   early: "Adiantado",
-  note_attached: "Sem Documento",
+  not_attached: "Sem Documento",
 };
 
 const StatusBadge = styled.span<{ $status: string }>`
