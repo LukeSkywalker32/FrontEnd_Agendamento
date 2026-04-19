@@ -229,10 +229,32 @@ export function NovoAgendamento() {
     setForm(prev => ({ ...prev, [name]: value }));
   }
 
+  const IMAGE_MIMES = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "image/gif",
+    "image/webp",
+    "image/bmp",
+  ];
+
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files) {
-      setSelectedFiles(Array.from(e.target.files));
+    if (!e.target.files) return;
+
+    const files = Array.from(e.target.files);
+    //Verifica se o arquivo é PDF ou imagem
+    const photoFiles = files.filter(f => IMAGE_MIMES.includes(f.type));
+    if (photoFiles.length > 0) {
+      const names = photoFiles.map(f => f.name).join(", ");
+      toast.error(
+        `Arquivos nao permitidos: ${names}.\n\nDocumentos não podem ser fotos (JPEG, PNG, etc). Envie somente PDFs`,
+      );
+      //Limpa o input para forçar nova seleção
+      e.target.value = "";
+      setSelectedFiles([]);
+      return;
     }
+    setSelectedFiles(files);
   }
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
